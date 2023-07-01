@@ -40,8 +40,10 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           //open the post forms
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const PostForm()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const PostForm(
+                    title: 'Add new post',
+                  )));
         },
         child: const Icon(Icons.add),
       ),

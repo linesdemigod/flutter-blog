@@ -1,7 +1,9 @@
 import 'package:blogapp/constant.dart';
 import 'package:blogapp/models/api_response.dart';
 import 'package:blogapp/models/post.dart';
+import 'package:blogapp/screens/comment_screen.dart';
 import 'package:blogapp/screens/login.dart';
+import 'package:blogapp/screens/post_form.dart';
 import 'package:blogapp/services/post_service.dart';
 import 'package:blogapp/services/user_service.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +40,43 @@ class _PostScreenState extends State<PostScreen> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
-      // setState(() {
-      //   loading = !loading;
-      // });
+    }
+  }
+
+  //post like dislike
+  void _handPostLikeDislike(int postId) async {
+    ApiResponse response = await likeUnlikePost(postId);
+
+    if (response.error == null) {
+      retrievePosts();
+    } else if (response.error == unauthorized) {
+      // ignore: use_build_context_synchronously
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Login()),
+                (route) => false)
+          });
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
+  void _handleDeletePost(int postId) async {
+    ApiResponse response = await deletePost(postId);
+    if (response.error == null) {
+      retrievePosts();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Login()),
+                (route) => false)
+          });
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
 
@@ -123,9 +159,17 @@ class _PostScreenState extends State<PostScreen> {
                                   ],
                                   onSelected: (val) {
                                     if (val == 'edit') {
-                                      // edit
+                                      // edit post
+                                      //open the post forms
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => PostForm(
+                                                    title: 'Edit Post',
+                                                    post: post,
+                                                  )));
                                     } else {
-                                      // delete
+                                      // delete post
+                                      _handleDeletePost(post.id ?? 0);
                                     }
                                   },
                                 )
@@ -136,22 +180,26 @@ class _PostScreenState extends State<PostScreen> {
                         height: 12,
                       ),
                       Text('${post.body}'),
-                      post.image != null
-                          ? Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 180,
-                              margin: const EdgeInsets.only(top: 5),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage('${post.image}'),
-                                    fit: BoxFit.cover),
-                              ),
-                            )
-                          : SizedBox(
-                              height: post.image != null ? 0 : 10,
-                            ),
+                      if (post.image != null)
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 180,
+                          margin: const EdgeInsets.only(top: 5),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                // $imageUrl/
+                                // http://192.168.177.1:8000/storage
+                                image: NetworkImage('$imageUrl${post.image}'),
+                                fit: BoxFit.cover),
+                          ),
+                        )
+                      else
+                        SizedBox(
+                          height: post.image != null ? 0 : 10,
+                        ),
                       Row(
                         children: [
+                          // like post
                           kLikeAndComment(
                               post.likesCount ?? 0,
                               post.selfLiked == true
@@ -159,22 +207,29 @@ class _PostScreenState extends State<PostScreen> {
                                   : Icons.favorite_outline,
                               post.selfLiked == true
                                   ? Colors.red
-                                  : Colors.black38,
-                              () {}),
+                                  : Colors.black38, () {
+                            _handPostLikeDislike(post.id ?? 0);
+                          }),
                           Container(
                             height: 25,
                             width: 0.5,
                             color: Colors.black38,
                           ),
                           kLikeAndComment(post.commentsCount ?? 0,
-                              Icons.sms_outlined, Colors.black54, () {})
+                              Icons.sms_outlined, Colors.black54, () {
+                            // to comment screen
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => CommentScreen(
+                                      postId: post.id,
+                                    )));
+                          })
                         ],
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 0.5,
                         color: Colors.black26,
-                      )
+                      ),
                     ],
                   ),
                 );

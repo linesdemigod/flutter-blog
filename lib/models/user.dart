@@ -6,11 +6,11 @@ class User {
   String? token;
 
   User({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.email,
-    required this.token,
+    this.id,
+    this.name,
+    this.image,
+    this.email,
+    this.token,
   });
 
   //function to convert json data to user model

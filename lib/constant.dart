@@ -8,6 +8,7 @@ const logoutUrl = "$baseUrl/logout";
 const userUrl = "$baseUrl/user";
 const postsUrl = "$baseUrl/posts";
 const commentsUrl = "$baseUrl/comments";
+String imageUrl = 'http://192.168.177.1:8000/storage/';
 
 //--Errors---
 const serverError = "Server error";
