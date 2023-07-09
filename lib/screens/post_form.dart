@@ -25,6 +25,7 @@ class _PostFormState extends State<PostForm> {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   TextEditingController txtControllerBody = TextEditingController();
   bool loading = false;
+  //image picker
   File? _imageFile;
   final _picker = ImagePicker();
 

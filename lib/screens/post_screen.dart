@@ -6,6 +6,7 @@ import 'package:blogapp/screens/login.dart';
 import 'package:blogapp/screens/post_form.dart';
 import 'package:blogapp/services/post_service.dart';
 import 'package:blogapp/services/user_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PostScreen extends StatefulWidget {
@@ -118,8 +119,8 @@ class _PostScreenState extends State<PostScreen> {
                                   decoration: BoxDecoration(
                                       image: post.user!.image != null
                                           ? DecorationImage(
-                                              image: NetworkImage(
-                                                  '${post.user!.image}'))
+                                              image: CachedNetworkImageProvider(
+                                                  '$imageUrl${post.user!.image}'))
                                           : null,
                                       borderRadius: BorderRadius.circular(25),
                                       color: Colors.amber),
@@ -189,7 +190,9 @@ class _PostScreenState extends State<PostScreen> {
                             image: DecorationImage(
                                 // $imageUrl/
                                 // http://192.168.177.1:8000/storage
-                                image: NetworkImage('$imageUrl${post.image}'),
+                                // image: NetworkImage('$imageUrl${post.image}'),
+                                image: CachedNetworkImageProvider(
+                                    '$imageUrl${post.image}'),
                                 fit: BoxFit.cover),
                           ),
                         )
