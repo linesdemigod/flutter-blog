@@ -1,7 +1,7 @@
 //--- STRING --//
 import 'package:flutter/material.dart';
 
-const baseUrl = "http://192.168.177.1:8000/api";
+const baseUrl = "http://your-ip:8000/api";
 const loginUrl = "$baseUrl/login";
 const registerUrl = "$baseUrl/register";
 const logoutUrl = "$baseUrl/logout";
@@ -9,7 +9,7 @@ const userUrl = "$baseUrl/user";
 const usersUrl = "$baseUrl/users";
 const postsUrl = "$baseUrl/posts";
 const commentsUrl = "$baseUrl/comments";
-const imageUrl = 'http://192.168.177.1:8000/storage/';
+const imageUrl = 'http://your-id:8000/storage/';
 
 //--Errors---
 const serverError = "Server error";
